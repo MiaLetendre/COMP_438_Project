@@ -1,4 +1,4 @@
-# Visual Studio temporary files
+//Dont need these buidl files, can be build on personal machines
 .vs/
 out/
 build/

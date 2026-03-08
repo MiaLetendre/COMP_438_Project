@@ -27,7 +27,7 @@ class VineGen
 		Eigen::Vector3f p2; 
 		Eigen::Vector3f p3; 
 		 //for the M matrix
-		float s = 1.0f / 2.0f;
+		float s = 0.5f;
 
 public: 
 	VineGen(int iterations, string start, unordered_map<string, string> rules);
@@ -36,5 +36,5 @@ public:
 	vector<vector<Eigen::Vector3f>> splineIt();
 
 	//helper functions for splineIt
-	Eigen::Vector3f getPoint(float t);
-};
+	Eigen::Vector3f getPoint(float t, const Eigen::Vector3f& p0, const Eigen::Vector3f& p1, const Eigen::Vector3f& p2, const Eigen::Vector3f& p3);
+	};

@@ -13,14 +13,13 @@
 
 using namespace std;
 
-float pi = 3.14159265358979323846f;
-float rads = (45.0f * static_cast<float>(pi) / 180.0f); //45 degree rotation around z-axis
-Eigen::Vector3f axis(0, 0, 1); //rotation around z-axis
+
 
 Turt::Turt() {
 	this->root = new Node();
 	this->currentNode = this->root;
-	this->heading = Eigen::Vector3f(0, 1, 0); //initial heading pointing up the y-axis
+	this->heading = Eigen::Vector3f(0.0f, 1.0f, 0.0f);
+	
 }
 
 Turt::Turt(Node* rootNode) {
@@ -84,7 +83,7 @@ void Turt::processString(const string& commands) {
 }
 
 void Turt::stepForward(float step) {
-	Eigen::Vector3f newPos = this->currentNode->nextPos(step);
+	Eigen::Vector3f newPos = this->currentNode->nextPos(step, this->heading);
 	Eigen::Quaternionf rot = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitZ(), this->heading);
 
 	Node* newNode = new Node(newPos, rot, this->currentNode->getRadius(), this->currentNode->getDepth() + 1, *this->currentNode);

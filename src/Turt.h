@@ -43,4 +43,7 @@ private:
 	Node* root; //root node of the turtle
 	Eigen::Vector3f heading; //rotation vector for '+' and '-' commands
 	stack<prevState> nodeStack; //stack to keep track of nodes for push and pop operations
+	float pi = 3.14159265358979323846f;
+	float rads = (45.0f * static_cast<float>(pi) / 180.0f); //45 degree rotation around z-axis
+	Eigen::Vector3f axis = Eigen::Vector3f(0, 0, 1); //rotation around z-axis
 };

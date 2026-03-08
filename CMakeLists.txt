@@ -28,14 +28,29 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Eigen)
 
 
+add_executable(vine_debug 
+    src/vineGen.cpp
+    src/node.cpp
+    src/Turt.cpp
+    src/main.cpp
+)
 
+#delete these two parts after testing
 pybind11_add_module(vineGen_cpp
     src/vineGen.cpp
     src/node.cpp
     src/Turt.cpp
     src/main.cpp
 )
-target_link_libraries(vineGen_cpp PRIVATE Eigen3::Eigen)
+target_link_libraries(vine_debug PRIVATE 
+    Eigen3::Eigen
+    pybind11::module
+)
+
+
+target_link_libraries(vineGen_cpp PRIVATE 
+    Eigen3::Eigen
+)
 #target_link_directories(vineGen_cpp PRIVATE ${EIGEN_SOURCE_DIR}/build/lib)
 
 set_target_properties(vineGen_cpp PROPERTIES 

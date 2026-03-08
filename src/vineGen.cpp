@@ -117,9 +117,16 @@ vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
 				p3 = verts[i][j + 2];
 			}
 
+			if (i == 0 && j == 0) {
+				cout << "p0: " << p0.transpose() << endl;
+				cout << "p1: " << p1.transpose() << endl;
+				cout << "p2: " << p2.transpose() << endl;
+				cout << "p3: " << p3.transpose() << endl;
+			}
+
 			//if chucking, then change k += to .2 or .25, if higher res, then change to .05
 			for (float k = 0; k < 1; k += 0.1f) {
-				currentBranch.push_back(getPoint(k));
+				currentBranch.push_back(getPoint(k, p0, p1, p2, p3));
 			}
 		}
 		//needs last point
@@ -131,8 +138,9 @@ vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
 	return points;
 }
 
-Eigen::Vector3f VineGen::getPoint(float t) {
+Eigen::Vector3f VineGen::getPoint(float t, const Eigen::Vector3f& p0, const Eigen::Vector3f& p1, const Eigen::Vector3f& p2, const Eigen::Vector3f& p3) {
 	//T*M*G
+	s = 0.5f;
 	Eigen::Matrix4f M;
 	M <<
 		-s, 2 - s, s - 2, s,
@@ -149,5 +157,9 @@ Eigen::Vector3f VineGen::getPoint(float t) {
 		p3.x(), p3.y(), p3.z();
 
 	// 1x4* 4x4 is 1x4, 1x4 * 4x3 is 1x3 of verts
+	if ((T.transpose() * M * G).norm() > 1000000.0f) {
+		cout << "Error: NaN value in spline calculation!" << endl;
+	}
+
 	return (T.transpose() * M * G).transpose();
 }

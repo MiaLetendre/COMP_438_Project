@@ -16,7 +16,7 @@ public:
 	Node(); //default constructor
 	Node(Eigen::Vector3f pos, Eigen::Quaternionf rot, float radius, int depth, Node& parent);
 	~Node(); //destructor
-	Eigen::Vector3f nextPos(float step); //multiplies step by direction and adds to pos
+	Eigen::Vector3f nextPos(float step, Eigen::Vector3f heading); //multiplies step by direction and adds to pos
 	
 	//needs to be a stack
 	//push saves pos, pop restores pos

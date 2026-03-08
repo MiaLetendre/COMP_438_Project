@@ -37,9 +37,8 @@ Node ::~Node() {
 	this->children.clear();
 }
 
-Eigen::Vector3f Node::nextPos(float step) {
-	this->pos += this->dir * step;
-	return this->pos;
+Eigen::Vector3f Node::nextPos(float step, Eigen::Vector3f heading) {
+	return this->pos + (heading * step);
 }
 
 

@@ -24,8 +24,20 @@ string start = "F";
 unordered_map<string, string> rules = {{"F", "F[+&F<]F[-^F]F>"}};
 
 int main() {
-
-	
+	/*
+	cout << "main is working" << endl;
+	VineGen gen(iterations, start, rules);
+	string LString = gen.getLString(iterations, start, rules);
+	cout << "LString: " << LString << endl;
+	vector<vector<Eigen::Vector3f>> totalBranches = gen.generate_vine(LString);
+	totalBranches = gen.splineIt();
+	cout << "Total Branches: " << totalBranches.size() << endl;
+	for (int i = 0; i < totalBranches.size(); i++) {
+		for (int j = 0; j < totalBranches[i].size(); j++) {
+			cout << totalBranches[i][j] << endl;
+		}
+	}
+	*/
 	return 0;
 }
 
