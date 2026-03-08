@@ -1,0 +1,8 @@
+# Visual Studio temporary files
+.vs/
+out/
+build/
+x64/
+*.pyd
+*.obj
+*.log
