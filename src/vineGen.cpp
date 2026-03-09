@@ -48,8 +48,9 @@ string VineGen::getLString(int iterations, string start, unordered_map<string, s
 	return LString;
 }
 
-vector<vector<Eigen::Vector3f>> VineGen::generate_vine(string LString) {
-	Turt turtle;
+vector<vector<Eigen::Vector3f>> VineGen::generate_vine(string LString, float angle) {
+	Node* temp = new Node();
+	Turt turtle(temp, angle);
 
 	//turns the string, into the nodes that make the vine
 	turtle.processString(LString);
@@ -61,7 +62,9 @@ vector<vector<Eigen::Vector3f>> VineGen::generate_vine(string LString) {
 	}
 
 	turtle.getRoot()->harvest(totalBranches, vector<Eigen::Vector3f>());
-	this->verts = totalBranches;
+	verts = totalBranches;
+	//mem leak fix
+	delete temp;
 	return totalBranches;
 }
 

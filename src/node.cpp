@@ -9,20 +9,20 @@
 using namespace std;
 
 Node::Node() {
-	this->id = idCounter++;
-	this->parent = nullptr;
-	this->children = vector<Node*>();
-	this->pos = Eigen::Vector3f(0, 0, 0);
-	this->rot = Eigen::Quaternionf(1, 0, 0, 0);
-	this->radius = 1;
-	this->depth = 0;
+	id = idCounter++;
+	parent = nullptr;
+	children = vector<Node*>();
+	pos = Eigen::Vector3f(0, 0, 0);
+	rot = Eigen::Quaternionf(1, 0, 0, 0);
+	radius = 1;
+	depth = 0;
 
 }
 
 Node::Node(Eigen::Vector3f pos, Eigen::Quaternionf rot, float radius, int depth, Node& parent) {
-	this->id = idCounter++;
+	id = idCounter++;
 	this->parent = &parent;
-	this->children = vector<Node*>();
+	children = vector<Node*>();
 	this->pos = pos;
 	this->rot= rot;
 	this->radius = radius;
@@ -30,15 +30,15 @@ Node::Node(Eigen::Vector3f pos, Eigen::Quaternionf rot, float radius, int depth,
 }
 
 Node ::~Node() {
-	for (Node* child : this->children) {
+	for (Node* child : children) {
 		delete child;
 	}
 
-	this->children.clear();
+	children.clear();
 }
 
 Eigen::Vector3f Node::nextPos(float step, Eigen::Vector3f heading) {
-	return this->pos + (heading * step);
+	return pos + (heading * step);
 }
 
 
@@ -48,30 +48,30 @@ Eigen::Vector3f Node::nextPos(float step, Eigen::Vector3f heading) {
 void Node::harvest(vector<vector<Eigen::Vector3f>>& totalBranches, vector<Eigen::Vector3f> currentBranch) {
 	
 	//adds the verteces to current branch
-	currentBranch.push_back(this->getPosition());
+	currentBranch.push_back(getPosition());
 
 	//no children means, add the branch to the total branch list and return
-	if (this->children.size() == 0) {
+	if (children.size() == 0) {
 		totalBranches.push_back(currentBranch);
 		return;
 		//this else if ensures only the first child only adds to current bracnh
 	} else if (this->children.size() > 0) {
-		this->children[0]->harvest(totalBranches, currentBranch);
+		children[0]->harvest(totalBranches, currentBranch);
 	}
 
 	//then it goes to all the oother children to give them their own branch
-	for (int i = 1; i < this->children.size(); i++) {
-		if (this->children[i] != nullptr) {
-			vector<Eigen::Vector3f> newBranch = {this->getPosition()};
+	for (int i = 1; i < children.size(); i++) {
+		if (children[i] != nullptr) {
+			vector<Eigen::Vector3f> newBranch = {getPosition()};
 
-			this->children[i]->harvest(totalBranches, newBranch);
+			children[i]->harvest(totalBranches, newBranch);
 		}
 	}
 }
 
 
 Eigen ::Vector3f Node::getDirection() {
-	return this->dir;
+	return dir;
 }
 
 void Node::setDirection(Eigen::Vector3f dir) {
@@ -83,7 +83,7 @@ void Node::setPosition(Eigen::Vector3f pos) {
 }
 
 Eigen::Vector3f Node::getPosition() {
-	return this->pos;
+	return pos;
 }
 
 void Node::setRotation(Eigen::Quaternionf rot) {
@@ -91,7 +91,7 @@ void Node::setRotation(Eigen::Quaternionf rot) {
 }
 
 Eigen::Quaternionf Node::getRotation() {
-	return this->rot;
+	return rot;
 }
 
 void Node::setDepth(int depth) {
@@ -99,11 +99,11 @@ void Node::setDepth(int depth) {
 }
 
 int Node::getDepth() {
-	return this->depth;
+	return depth;
 }
 
 float Node::getRadius() {
-	return this->radius;
+	return radius;
 }
 
 void Node::setRadius(float radius) {
@@ -121,9 +121,9 @@ void Node::addParent(Node* parent) {
 }
 
 Node Node::removeChild(Node* child) {
-	auto it = find(this->children.begin(), this->children.end(), child);
-	if (it != this->children.end()) {
-		this->children.erase(it);
+	auto it = find(children.begin(), children.end(), child);
+	if (it != children.end()) {
+		children.erase(it);
 		child->parent = nullptr;
 		return *child;
 	}
@@ -132,11 +132,12 @@ Node Node::removeChild(Node* child) {
 
 Node Node::removeParent(Node* parent) {
 	if (this->parent == parent) {
-		this->parent = nullptr;
-		auto it = find(parent->children.begin(), parent->children.end(), this);
+		auto it = find(this->parent->children.begin(), this->parent->children.end(), this);
 		if (it != parent->children.end()) {
 			parent->children.erase(it);
+			this->parent = nullptr;
 		}
+		
 		return *parent;
 	}
 	throw runtime_error("Parent not found");

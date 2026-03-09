@@ -16,65 +16,83 @@ using namespace std;
 
 
 Turt::Turt() {
-	this->root = new Node();
-	this->currentNode = this->root;
-	this->heading = Eigen::Vector3f(0.0f, 1.0f, 0.0f);
-	
+	root = new Node();
+	currentNode = root;
+	heading = Eigen::Vector3f(0.0f, 1.0f, 0.0f);
+	rads = (22.5f * static_cast<float>(pi) / 180.0f);
 }
 
-Turt::Turt(Node* rootNode) {
-	this->root = rootNode;
-	this->currentNode = this->root;
+Turt::Turt(Node* rootNode, float angle) {
+	root = rootNode;
+	currentNode = root;
+	heading = Eigen::Vector3f(0.0f, 1.0f, 0.0f);
+	rads = (angle * static_cast<float>(pi) / 180.0f);
 }
 
 
 //currently lang is F, +, -, [, ]
 //want to add ^ and & to go upand down on y axis, and < and > to roll left and right on z axis
 //this will need a local uo,right and forward vector
-//also I need to add a X dummy var to ignore
-
+//also maybe I need to add a X dummy var to ignore
+// i think maybe addidn a L and a B for leaf and Bloom/flower (F was already used) 
 void Turt::processString(const string& commands) {
 	Eigen::Matrix3f twisty;
 	for (char command : commands) {
 		switch (command) {
 			case 'F':
 				//default step size of 1.0
-				this->stepForward(1.0f); 
+				stepForward(1.0f); 
 				break;
 			case '[':
-				this->push();
+				push();
 				break;
 			case ']':
-				this->pop();
+				pop();
 				break;
 			case '+':
 				//rotate right by 45 degrees
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitZ());
-				this->heading = twisty * this->heading; 
+				heading = twisty * heading; 
 				break;
 			case '-':
 				//rotate left by 45 degrees
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitZ());
-				this->heading = twisty.transpose() * this->heading; 
+				heading = twisty.transpose() * heading; 
 				break;
 			case '^':
 				//rotate up by 45 degrees
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitX());
-				this->heading = twisty * this->heading; 
+				heading = twisty * heading; 
 				break;
 			case '&':
 				//rotate down by 45 degrees
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitX());
-				this->heading = twisty.transpose() * this->heading; 
+				heading = twisty.transpose() * heading; 
 				break;
 			case '<':
 				//roll left by 45 degrees
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitY());
-				this->heading = twisty * this->heading; 
+				heading = twisty * heading; 
 				break;
 			case '>':
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitY());
-				this->heading = twisty.transpose() * this->heading; //roll right by 45 degrees
+				heading = twisty.transpose() * heading; //roll right by 45 degrees
+				break;
+			case 'L':
+				//uhhh how do i implement leaf?
+				Leaf leaf;
+				leaf.leafHead = this->heading;
+				leaf.leafPos = this->currentNode->getPosition();
+				break;
+			case 'B':
+				//dido
+				Flower flower;
+				flower.flowerHead = this->heading;
+				flower.flowerPos = this->currentNode->getPosition();
+				break;
+			case 'X':
+				//ignored like other things, but I still want it there 
+				break;
 			default:
 				//ignore unrecognized commands
 				break;
@@ -83,41 +101,42 @@ void Turt::processString(const string& commands) {
 }
 
 void Turt::stepForward(float step) {
-	Eigen::Vector3f newPos = this->currentNode->nextPos(step, this->heading);
+	//this fucntion is the basis on how ass the nodes are added to the tree
+	//how this works is that it find the next positions that the node will go, makes the roation vec equal to the rotation, then creates a new node in that direction
+	Eigen::Vector3f newPos = currentNode->nextPos(step, heading);
 	Eigen::Quaternionf rot = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitZ(), this->heading);
-
-	Node* newNode = new Node(newPos, rot, this->currentNode->getRadius(), this->currentNode->getDepth() + 1, *this->currentNode);
-	
+	Node* newNode = new Node(newPos, rot, currentNode->getRadius(), this->currentNode->getDepth() + 1, *this->currentNode);
+	//makes the new node this nodes child which is important relationsally for harvesting, thenn changes to that ndoe
 	this->currentNode->addChild(newNode);
 	this->currentNode = newNode;
 }
 
 void Turt::push() {
-	prevState state = { this->currentNode, this->heading };
-	this->nodeStack.push(state);
+	prevState state = {currentNode, heading };
+	nodeStack.push(state);
 }
 
 void Turt::pop() {
-	if (this->nodeStack.empty()) {
+	if (nodeStack.empty()) {
 		std::cout<< "empty node stack" <<endl;
 		return;
 	}
-	prevState state = this->nodeStack.top();
-	this->currentNode = state.node;
-	this->heading = state.heading;
-	this->nodeStack.pop();
+	prevState state = nodeStack.top();
+	currentNode = state.node;
+	heading = state.heading;
+	nodeStack.pop();
 }
 
 Node* Turt::getRoot() {
-	return this->root;
+	return root;
 }
 
 void Turt::setRoot(Node* rootNode) {
-	this->root = rootNode;
+	root = rootNode;
 }
 
 Node* Turt::getCurrentNode() {
-	return this->currentNode;
+	return currentNode;
 }
 
 void Turt::setCurrentNode(Node* currentNode) {
@@ -125,7 +144,7 @@ void Turt::setCurrentNode(Node* currentNode) {
 }
 
 Eigen::Vector3f Turt::getHeading() {
-	return this->heading;
+	return heading;
 }
 
 void Turt::setHeading(Eigen::Vector3f heading) {

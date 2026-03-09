@@ -29,6 +29,7 @@ class VineGenProperties(bpy.types.PropertyGroup):
     axiom: bpy.props.StringProperty(name="Axiom", default="F")
     rules: bpy.props.StringProperty(name="Rules", default="F[+F]F[-F]F")
     thickness : bpy.props.FloatProperty(name="Thickness", default=0.04, min=0.01, max=1)
+    angle : bpy.props.FloatProperty(name="Angle", default=25.0, min=0.0, max=360.0)
 
 class VineGenOperator(bpy.types.Operator):
     bl_idname = "object.vine_gen_operator"
@@ -45,9 +46,13 @@ class VineGenOperator(bpy.types.Operator):
         curve_data.fill_mode = 'FULL'
         curve_data.bevel_depth = 0.02
 
-
+        allRules = {}
+        passedRules = scene_props.rules.split(",")
+        for rule in passedRules:
+            key, value = rule.split("->")
+            allRules[key.strip()] = value.strip()
         ruleA = {"F": scene_props.rules}
-        totalBranches = main_cpp.generate_vine(scene_props.iterations, scene_props.axiom, ruleA)
+        totalBranches = main_cpp.generate_vine(scene_props.iterations, scene_props.axiom, allRules, scene_props.angle)
         actaulBracnhes = bpy.data.objects.new("Vine", curve_data)
         bpy.context.collection.objects.link(actaulBracnhes)
 
@@ -56,6 +61,11 @@ class VineGenOperator(bpy.types.Operator):
             line.points.add(len(currentBranch) - 1)
             for i, point in enumerate(currentBranch):
                 line.points[i].co = (point[0], point[1], point[2], 1.0)
+                #creates a natural thickness
+                #better to do it here then rewrite a bucnh of c++ code
+                taper = scene_props.thickness * (1 - (i / len(currentBranch)))
+                line.points[i].radius = max(0.01, taper)
+
 
         
         return {'FINISHED'}
@@ -75,6 +85,7 @@ class panelForInputs(bpy.types.Panel):
         layout.prop(scene_props, "axiom")
         layout.prop(scene_props, "rules")
         layout.prop(scene_props, "thickness")
+        layout.prop(scene_props, "angle")
 
         layout.separator()
         layout.operator("object.vine_gen_operator", text ="Generate Vine", icon ='PLUGIN')

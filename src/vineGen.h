@@ -32,9 +32,8 @@ class VineGen
 public: 
 	VineGen(int iterations, string start, unordered_map<string, string> rules);
 	string getLString(int iterations, string start, unordered_map<string, string> rules);
-	vector<vector<Eigen::Vector3f>> generate_vine(string LString);
+	vector<vector<Eigen::Vector3f>> generate_vine(string LString, float angle);
 	vector<vector<Eigen::Vector3f>> splineIt();
-
 	//helper functions for splineIt
 	Eigen::Vector3f getPoint(float t, const Eigen::Vector3f& p0, const Eigen::Vector3f& p1, const Eigen::Vector3f& p2, const Eigen::Vector3f& p3);
 	};

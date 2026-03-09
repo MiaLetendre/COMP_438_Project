@@ -19,6 +19,7 @@ public:
 
 	Turt(); //default constructor
 	Turt(Node* rootNode); //constructor with root node
+	Turt(Node* rootNode, float angle);
 	void processString(const string& commands); //processes a string of commands to generate the vine structure
 	void stepForward(float step); //translates 'F' 
 	void push(); //translates '['
@@ -44,6 +45,15 @@ private:
 	Eigen::Vector3f heading; //rotation vector for '+' and '-' commands
 	stack<prevState> nodeStack; //stack to keep track of nodes for push and pop operations
 	float pi = 3.14159265358979323846f;
-	float rads = (45.0f * static_cast<float>(pi) / 180.0f); //45 degree rotation around z-axis
+	float rads;
+	//float rads = (22.5f * static_cast<float>(pi) / 180.0f); //22.5 degree rotation around z-axis
 	Eigen::Vector3f axis = Eigen::Vector3f(0, 0, 1); //rotation around z-axis
+	struct leaf {
+		Eigen::Vector3f leafPos;
+		Eigen::Vector3f leafHead;
+	};
+	struct flower {
+		Eigen::Vector3f flowerPos;
+		Eigen::Vector3f flowerHead;
+	};
 };
