@@ -10,6 +10,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <unordered_map>
+#include <utility>
 
 using namespace std;
 
@@ -48,27 +49,28 @@ string VineGen::getLString(int iterations, string start, unordered_map<string, s
 	return LString;
 }
 
-vector<vector<Eigen::Vector3f>> VineGen::generate_vine(string LString, float angle) {
+vector<pair<vector<Eigen::Vector3f>, int>> VineGen::generate_vine(string LString, float angle) {
 	Node* temp = new Node();
 	Turt turtle(temp, angle);
 
 	//turns the string, into the nodes that make the vine
 	turtle.processString(LString);
 	cout << "Vine Generation activated!" << endl;
-	vector<vector<Eigen::Vector3f>> totalBranches;
+	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches;
 	if (turtle.getRoot() == nullptr) {
+		//shoudlnt get here anymore but saftey
 		cout << "Error: Root node is null!" << endl;
 		return totalBranches;
 	}
-
-	turtle.getRoot()->harvest(totalBranches, vector<Eigen::Vector3f>());
+	
+	turtle.getRoot()->harvest(totalBranches, vector<Eigen::Vector3f>(), 0);
 	verts = totalBranches;
 	//mem leak fix
 	delete temp;
 	return totalBranches;
 }
 
-vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
+vector<pair<vector<Eigen::Vector3f>, int>> VineGen::splineIt() {
 	/*Spline Options:
 	* Catmull-Rom C1, interpolating, but need tangents, no control at enpoint derive
 	* cubic hermite: C1, interpolating must specify derivatives at each endpoint
@@ -92,7 +94,7 @@ vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
 	// s is typically 1/2 ig
 	// G = [Pi-1, Pi, Pi+1, Pi+2] control vectors
 
-	vector<vector<Eigen::Vector3f>> points;
+	vector<pair<vector<Eigen::Vector3f>, int>> points;
 	//
 	vector<Eigen::Vector3f> currentBranch;
 
@@ -100,24 +102,26 @@ vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
 		return points;
 	}
 	for (int i = 0; i < (int)verts.size(); i++) {
-		if (verts[i].size() < 2) {
+		vector<Eigen::Vector3f> branchVerts = verts[i].first;
+		int branchDepth = verts[i].second;
+		if (branchVerts.size() < 2) {
 			continue;
 		}
-		for (int j = 0; j < (int)verts[i].size() - 1; j++) {
+		for (int j = 0; j < (int)branchVerts.size() - 1; j++) {
 			if (j == 0) { //need a ghost point if no prev index
-				p0 = verts[i][j] - (verts[i][j + 1] - verts[i][j]);
+				p0 = branchVerts[j] - (branchVerts[j + 1] - branchVerts[j]);
 			}
 			else {
-				p0 = verts[i][j - 1];
+				p0 = branchVerts[j - 1];
 			}
-			p1 = verts[i][j];
-			p2 = verts[i][j + 1];
+			p1 = branchVerts[j];
+			p2 = branchVerts[j + 1];
 
-			if (j + 2 >= verts[i].size()) {//need a ghost point if no next index
-				p3 = verts[i][j + 1] + (verts[i][j + 1] - verts[i][j]);
+			if (j + 2 >= branchVerts.size()) {//need a ghost point if no next index
+				p3 = branchVerts[j + 1] + (branchVerts[j + 1] - branchVerts[j]);
 			}
 			else { 
-				p3 = verts[i][j + 2];
+				p3 = branchVerts[j + 2];
 			}
 
 			if (i == 0 && j == 0) {
@@ -133,8 +137,8 @@ vector<vector<Eigen::Vector3f>> VineGen::splineIt() {
 			}
 		}
 		//needs last point
-		currentBranch.push_back(verts[i].back()); 
-		points.push_back(currentBranch);
+		currentBranch.push_back(branchVerts.back()); 
+		points.push_back(make_pair(currentBranch, branchDepth));
 		currentBranch.clear();
 	}
 	

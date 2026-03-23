@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <utility>
 
 
 namespace py = pybind11;
@@ -30,24 +31,24 @@ int main() {
 	VineGen gen(iterations, start, rules);
 	string LString = gen.getLString(iterations, start, rules);
 	cout << "LString: " << LString << endl;
-	vector<vector<Eigen::Vector3f>> totalBranches = gen.generate_vine(LString, tempAngle);
+	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generate_vine(LString, tempAngle);
 	totalBranches = gen.splineIt();
 	cout << "Total Branches: " << totalBranches.size() << endl;
 	for (int i = 0; i < totalBranches.size(); i++) {
-		for (int j = 0; j < totalBranches[i].size(); j++) {
-			cout << totalBranches[i][j] << endl;
+		for (int j = 0; j < totalBranches[i].first.size(); j++) {
+			cout << totalBranches[i].first[j] << endl;
 		}
 	}
 	
 	return 0;
 }
 
-vector<vector<Eigen::Vector3f>> generate_vine_main(int iterations, string start, unordered_map<string, string> rules, float angle) {
+vector<pair<vector<Eigen::Vector3f>, int>> generate_vine_main(int iterations, string start, unordered_map<string, string> rules, float angle) {
 	//starting rules will be above, willbe allowed to edit it later on
 
 	VineGen gen(iterations, start, rules);
 	string LString = gen.getLString(iterations, start, rules);
-	vector<vector<Eigen::Vector3f>> totalBranches = gen.generate_vine(LString, angle);
+	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generate_vine(LString, angle);
 	totalBranches = gen.splineIt();
 	return totalBranches;
 }

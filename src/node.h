@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <Eigen/Dense>
+#include <utility>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ public:
 	
 	//needs to be a stack
 	//push saves pos, pop restores pos
-	void harvest(vector<vector<Eigen::Vector3f>>& totalBranches, vector<Eigen::Vector3f> currentBranch); //here come the reaper!! (gets the vertex data for blender)
+	void harvest(vector<pair<vector<Eigen::Vector3f>, int>> &totalBranches, vector<Eigen::Vector3f> currentBranch, int branchDepth); //here come the reaper!! (gets the vertex data for blender)
 	
 	
 	Eigen::Vector3f getDirection(); //returns the direction of this node

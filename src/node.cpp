@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <Eigen/Dense>
+#include <utility>
 
 using namespace std;
 
@@ -45,18 +46,20 @@ Eigen::Vector3f Node::nextPos(float step, Eigen::Vector3f heading) {
 
 //need to pass in a vert that will be manipulated
 //each new row is a newbranch, prevents ends connecting to begenings
-void Node::harvest(vector<vector<Eigen::Vector3f>>& totalBranches, vector<Eigen::Vector3f> currentBranch) {
-	
+// could be a good place to calculate depth....
+void Node::harvest(vector<pair<vector<Eigen::Vector3f>, int>>& totalBranches, vector<Eigen::Vector3f> currentBranch, int branchDepth) {
+	depth = branchDepth;
 	//adds the verteces to current branch
 	currentBranch.push_back(getPosition());
 
 	//no children means, add the branch to the total branch list and return
 	if (children.size() == 0) {
-		totalBranches.push_back(currentBranch);
+		
+		totalBranches.push_back(make_pair(currentBranch, branchDepth));
 		return;
 		//this else if ensures only the first child only adds to current bracnh
 	} else if (this->children.size() > 0) {
-		children[0]->harvest(totalBranches, currentBranch);
+		children[0]->harvest(totalBranches, currentBranch, branchDepth );
 	}
 
 	//then it goes to all the oother children to give them their own branch
@@ -64,7 +67,7 @@ void Node::harvest(vector<vector<Eigen::Vector3f>>& totalBranches, vector<Eigen:
 		if (children[i] != nullptr) {
 			vector<Eigen::Vector3f> newBranch = {getPosition()};
 
-			children[i]->harvest(totalBranches, newBranch);
+			children[i]->harvest(totalBranches, newBranch, branchDepth + 1);
 		}
 	}
 }

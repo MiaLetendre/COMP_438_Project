@@ -48,11 +48,11 @@ private:
 	float rads;
 	//float rads = (22.5f * static_cast<float>(pi) / 180.0f); //22.5 degree rotation around z-axis
 	Eigen::Vector3f axis = Eigen::Vector3f(0, 0, 1); //rotation around z-axis
-	struct leaf {
+	struct Leaf {
 		Eigen::Vector3f leafPos;
 		Eigen::Vector3f leafHead;
 	};
-	struct flower {
+	struct Flower {
 		Eigen::Vector3f flowerPos;
 		Eigen::Vector3f flowerHead;
 	};

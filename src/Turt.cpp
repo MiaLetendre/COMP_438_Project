@@ -37,11 +37,25 @@ Turt::Turt(Node* rootNode, float angle) {
 // i think maybe addidn a L and a B for leaf and Bloom/flower (F was already used) 
 void Turt::processString(const string& commands) {
 	Eigen::Matrix3f twisty;
+	Flower flower;
+	Leaf leaf;
 	for (char command : commands) {
 		switch (command) {
 			case 'F':
 				//default step size of 1.0
 				stepForward(1.0f); 
+				break;
+			case 'G':
+				stepForward(1.0f);
+				break;
+			case 'H':
+				stepForward(1.0f);
+				break;
+			case 'I':
+				stepForward(1.0f);
+				break;
+			case 'J':
+				stepForward(1.0f);
 				break;
 			case '[':
 				push();
@@ -78,19 +92,27 @@ void Turt::processString(const string& commands) {
 				twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitY());
 				heading = twisty.transpose() * heading; //roll right by 45 degrees
 				break;
+			
+			/* could be how i add leafs/flowers, or jsut edit python file
 			case 'L':
 				//uhhh how do i implement leaf?
-				Leaf leaf;
 				leaf.leafHead = this->heading;
 				leaf.leafPos = this->currentNode->getPosition();
 				break;
 			case 'B':
 				//dido
-				Flower flower;
+				
 				flower.flowerHead = this->heading;
 				flower.flowerPos = this->currentNode->getPosition();
 				break;
+				*/
 			case 'X':
+				//ignored like other things, but I still want it there 
+				break;
+			case 'Y':
+				//ignored like other things, but I still want it there 
+				break;
+			case 'Z':
 				//ignored like other things, but I still want it there 
 				break;
 			default:
