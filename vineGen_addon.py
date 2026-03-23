@@ -275,6 +275,8 @@ class VineGenOperator(bpy.types.Operator):
             allGeneratedLeafs[0].hide_render = False
             allGeneratedLeafs[0].hide_viewport = False
             bpy.context.view_layer.update()
+            bpy.ops.object.select_all(action='DESELECT')
+
 
         
         return {'FINISHED'}

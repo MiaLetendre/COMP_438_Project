@@ -1,5 +1,4 @@
 #include "vineGen.h"
-#include "vine.h"
 #include "node.h"
 #include "Turt.h"
 
@@ -26,8 +25,7 @@ string VineGen::getLString(int iterations, string start, unordered_map<string, s
 	//Default Rule(s) : F -> F[+F]F[-F]F
 
 
-
-
+	//NEEDS SINGLE CHAR RULE -> ANY # OF CHARS REPLACEMENT
 
 	//curently just iterates 5 ties on a 2d plane
 	//replaces all instances of a rule to replace with what its supposed to
@@ -49,7 +47,9 @@ string VineGen::getLString(int iterations, string start, unordered_map<string, s
 	return LString;
 }
 
-vector<pair<vector<Eigen::Vector3f>, int>> VineGen::generate_vine(string LString, float angle) {
+//outer vector is all bracnhes, inner is the 3d coors with the depth
+//this the best for the pybind as all blender needs is positions and depth
+vector<pair<vector<Eigen::Vector3f>, int>> VineGen::generateVine(string LString, float angle) {
 	Node* temp = new Node();
 	Turt turtle(temp, angle);
 
@@ -131,7 +131,7 @@ vector<pair<vector<Eigen::Vector3f>, int>> VineGen::splineIt() {
 				cout << "p3: " << p3.transpose() << endl;
 			}
 
-			//if chucking, then change k += to .2 or .25, if higher res, then change to .05
+			//if chunking, then change k += to .2 or .25, if higher res, then change to .05
 			for (float k = 0; k < 1; k += 0.1f) {
 				currentBranch.push_back(getPoint(k, p0, p1, p2, p3));
 			}
@@ -156,7 +156,7 @@ Eigen::Vector3f VineGen::getPoint(float t, const Eigen::Vector3f& p0, const Eige
 		0, 1, 0, 0;
 	
 	Eigen::Vector4f T;
-	T<<  t * t * t, t * t, t, 1.0f;
+	T <<  t * t * t, t * t, t, 1.0f;
 	Eigen::Matrix<float, 4, 3> G;
 	G <<p0.x(), p0.y(), p0.z(),
 		p1.x(), p1.y(), p1.z(),

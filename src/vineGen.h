@@ -1,6 +1,5 @@
 #pragma once
 
-#include "vine.h"
 #include <vector>
 #include <string>
 #include <Eigen/Core>
@@ -32,7 +31,7 @@ class VineGen
 public: 
 	VineGen(int iterations, string start, unordered_map<string, string> rules);
 	string getLString(int iterations, string start, unordered_map<string, string> rules);
-	vector<pair<vector<Eigen::Vector3f>, int>> generate_vine(string LString, float angle);
+	vector<pair<vector<Eigen::Vector3f>, int>> generateVine(string LString, float angle);
 	vector<pair<vector<Eigen::Vector3f>, int>> splineIt();
 	//helper functions for splineIt
 	Eigen::Vector3f getPoint(float t, const Eigen::Vector3f& p0, const Eigen::Vector3f& p1, const Eigen::Vector3f& p2, const Eigen::Vector3f& p3);

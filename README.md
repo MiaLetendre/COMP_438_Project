@@ -43,14 +43,25 @@ Dragon Curve: Axiom: `F` Rules: `F->F+G,G->F-G` Angle: `90`
 Fractal Plant: Axiom: `-X` Rules: `X->F+[[X]-X]-F[-FX]+X,F->FF` Angle: `25`
 Wizard Spell A: Axiom: `X` Rules: `X->F[&-FF][^+FF]+>X,F->FF` Angle: `25`
 Wizard Spell B: Axiom: `X` Rules: `F->[F+F^F>F]F-F&F<F,` Angle: `25`
-Wizard Spell C: Axion: `[+F][-F]` Rules `F->F>F[^G],G->G<F` Angle: `40`
+Wizard Spell C: Axion: `[+F][-F]` Rules ` F->F>F[^G],G->G<F[^F]` Angle: `40`
 
 # HOW TO BUILD A SET OF RULES
+Only one letter can be replaced in each rule, for example:
+	GOOD `F->F+F`
+	BAD `FFG->FF+F`
 The vine starts off (0, 1, 0)
 	For a spell, if you want to build something that spins around the Y axis, you need to start with a + or a - 
-	Many times you don't need to use every possibel rule, for example, using ^ will turn you up, but > will change the direction of that up
+	Many times you don't need to use every possible rule, for example, using ^ will turn you up, but > will change the direction of that up
+Changing the axiom to fit your wanted vine is important
+You must understand how to add smaller branches reasonably, as they grow exponentially
 
 
 # WORKS CITED 
-
+"Bark Willow." Poly Haven, polyhaven.com/a/bark_willow. Accessed 20 Mar. 2026.
+Blender Foundation. Blender. Version 5.0.1, Blender Foundation, www.blender.org. Accessed 10 Mar. 2026.
+"catmullRom.pdf." Carnegie Mellon University, www.cs.cmu.edu/~fp/courses/graphics/asst5/catmullRom.pdf. Accessed 13 Mar. 2026.
+"Detailed Closeup Single Grape Leaf." Freepik, www.freepik.com/free-psd/detailed-closeup-single-grape-leaf_409868960.htm. Accessed 20 Mar. 2026.
+"lec06.pdf." Computer Graphics (15-462), Spring 2010, Carnegie Mellon University, www.cs.cmu.edu/afs/cs/academic/class/15462-s10/www/lec-slides/lec06.pdf. Accessed 13 Mar. 2026.
+"Pink Flower Petal Illustration Vector Set." Freepik, www.freepik.com/free-vector/pink-flower-petal-illustration-vector-set_16359014.htm. Accessed 20 Mar. 2026.
+Stowe. "P3D." Cornell University, people.ece.cornell.edu/land/OldStudentProjects/cs490-96to97/STOWE/P3D.html. Accessed 13 Mar. 2026.
 

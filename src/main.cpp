@@ -1,5 +1,4 @@
 #include "vineGen.h"
-#include "vine.h"
 #include "node.h"
 #include "Turt.h"
 
@@ -31,7 +30,7 @@ int main() {
 	VineGen gen(iterations, start, rules);
 	string LString = gen.getLString(iterations, start, rules);
 	cout << "LString: " << LString << endl;
-	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generate_vine(LString, tempAngle);
+	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generateVine(LString, tempAngle);
 	totalBranches = gen.splineIt();
 	cout << "Total Branches: " << totalBranches.size() << endl;
 	for (int i = 0; i < totalBranches.size(); i++) {
@@ -48,7 +47,7 @@ vector<pair<vector<Eigen::Vector3f>, int>> generate_vine_main(int iterations, st
 
 	VineGen gen(iterations, start, rules);
 	string LString = gen.getLString(iterations, start, rules);
-	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generate_vine(LString, angle);
+	vector<pair<vector<Eigen::Vector3f>, int>> totalBranches = gen.generateVine(LString, angle);
 	totalBranches = gen.splineIt();
 	return totalBranches;
 }
