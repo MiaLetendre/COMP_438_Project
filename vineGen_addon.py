@@ -30,7 +30,9 @@ if flowerPath not in sys.path:
 leafPath = r'C:\Users\miale\source\repos\COMP_438_Project\models\Leaf.blend'
 if leafPath not in sys.path:
     sys.path.append(leafPath)
-
+vineTexturePath = r'C:\Users\miale\Source\Repos\COMP_438_Project\textures\woodvine\textures\bark_willow_diff_4k.jpg'
+if vineTexturePath not in sys.path:
+    sys.path.append(vineTexturePath)
 
 
 
@@ -103,14 +105,43 @@ class VineGenOperator(bpy.types.Operator):
             else:
                 print("failed to load leaf or flower, they will not be used in the generation")
 
-
+        #curve info
         curve_data = bpy.data.curves.new(name="VineCurve", type='CURVE')
         curve_data.dimensions = '3D'
         curve_data.fill_mode = 'FULL'
         curve_data.bevel_depth = 0.05
         curve_data.twist_mode = 'Z_UP'
 
+        #material for vine
+        materialVine = bpy.data.materials.new(name="VineMaterial")
+        materialVine.use_nodes = True
+        node_tree = materialVine.node_tree
+        bsdf = materialVine.node_tree.nodes["Principled BSDF"]
+        bsdf.inputs["Roughness"].default_value = 0.8
+        try:
+            texImage = bpy.data.images.get(os.path.basename(vineTexturePath))
+            if not texImage:
+                texImage = bpy.data.images.load(vineTexturePath)
+
+            #create image texture node in the materical
+            # first it makes a new image texture on the node block, gets the image, then makes it more important than the brdf
+            texNode = node_tree.nodes.new('ShaderNodeTexImage')
+            texNode.image = texImage
+            texNode.location = (-300, 0)
+
+            #actaully adding texture
+            node_tree.links.new(texNode.outputs['Color'], bsdf.inputs['Base Color'])
+        except Exception as e:
+            #incase it doesnt load, jsut make it brown
+            bsdf.inputs["Base Color"].default_value = (0.171, 0.095, 0.04, 1)  
+        curve_data.materials.append(materialVine)
+
+
+        allGeneratedFlowers = []
+        allGeneratedLeafs = []
+
         #this is for if/wehn you turn a line into a mesh, makes it so instead of multiplying the vertes by 12 to get faces, it doe si tby 2 
+        #could also be one
         curve_data.resolution_u = 2
         curve_data.bevel_resolution = 2
 
@@ -139,15 +170,7 @@ class VineGenOperator(bpy.types.Operator):
         rootTapersNums = []
         for i in range(1,21):
             rootTapersNums.append((i/20.0) )
-        #material for vine
-        materialVine = bpy.data.materials.new(name="VineMaterial")
-        materialVine.use_nodes = True
-        bsdf = materialVine.node_tree.nodes["Principled BSDF"]
-        bsdf.inputs["Base Color"].default_value = (0.171, 0.095, 0.04, 1)  
-        bsdf.inputs["Roughness"].default_value = 0.8
-        curve_data.materials.append(materialVine)
-        allGeneratedFlowers = []
-        allGeneratedLeafs = []
+        
 
         for branchNum, (currentBranch, depth) in enumerate(totalBranches):
             if len(currentBranch) < 2:

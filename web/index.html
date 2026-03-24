@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1> Procedural Vine Generator Blender Addon</h1>
+    </header>
+
+    <section id="about">
+        <h2> About</h2>
+        <p> This project a Blender addon that takes input of rules, axioms, thickness, iterations, and angles stop create a realistic looking vine. It uses splines, a node based data structure, and LSystems stop create a beautiful vine.</p>
+    </section>
+
+    <section id="rules">
+            <h2> The Rules</h2>
+            <p>
+                # RULES
+                For the L-system, the rules are as follows:
+                F, G, H, I, J -> Move forward and draw a line, all go forward same amount
+                X, Y, Z -> A placeholder variable
+                + -> Turn right by a specified angle
+                - -> Turn left by a specified angle
+                [ -> Push the current position and angle onto a stack
+                ] -> Pop the position and angle from the stack
+                & -> Pitch down by a specified angle
+                ^ -> Pitch up by a specified angle
+                > -> Roll right by a specified angle
+                < -> Roll left by a specified angle
+            </p>
+    </section>
+
+    <section>
+        <h2> Examples of LSystems to use</h2>
+        <p>
+            Here are some examples of vines generated using the addon:
+            # EXAMPLES
+            Kock Curve Axiom: `F` Rules: `F->F+F-F-F+F` Angle: `90`
+            Sierpinski Triangle: Axiom: `F-G-G` Rules: `F->F-G+F+G-F,G->GG` Angle: `120`
+            Dragon Curve: Axiom: `F` Rules: `F->F+G,G->F-G` Angle: `90`
+            Fractal Plant: Axiom: `-X` Rules: `X->F+[[X]-X]-F[-FX]+X,F->FF` Angle: `25`
+            Wizard Spell A: Axiom: `X` Rules: `X->F[&-FF][^+FF]+>X,F->FF` Angle: `25`
+            Wizard Spell B: Axiom: `X` Rules: `F->[F+F^F>F]F-F&F<F,` Angle: `25`
+            Wizard Spell C: Axion: `[+F][-F]` Rules ` F->F>F[^G],G->G<F[^F]` Angle: `40`
+        </p>
+    </section>
+
+    <section id="Videos And Photos">
+        <h2> Videos and Photos</h2>
+        <img src="(where photo is)" alt="Screeenshot of ..." width="600"
+    </section>
+
+    <sectio id="Code">
+        <h2> Harvest Node Code: Turns the nodes to a 2d array</h2>
+        <code>
+            
+        </code>
+        
+    </section>
+
+
+
+</body>
+</html>

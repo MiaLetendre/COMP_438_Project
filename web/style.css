@@ -1,0 +1,27 @@
+body {
+    font-family: 'Source Serif 4', serif;
+    line-height: 1.5;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #92b08f;
+    color: #333;
+}
+
+h1 {
+    color: #AE91B1;
+    border-bottom: 2px solid #AE91B1;
+}
+
+code {
+    font-family: 'Source Code Pro', monospace;
+    background-color: #B19193;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+img{
+    border: 5px solid white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0,1);
+    border-radius: 8px;
+}
