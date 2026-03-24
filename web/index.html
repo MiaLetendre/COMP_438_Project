@@ -17,21 +17,21 @@
     </section>
 
     <section id="rules">
-            <h2> The Rules</h2>
-            <p>
-                # RULES
-                For the L-system, the rules are as follows:
-                F, G, H, I, J -> Move forward and draw a line, all go forward same amount
-                X, Y, Z -> A placeholder variable
-                + -> Turn right by a specified angle
-                - -> Turn left by a specified angle
-                [ -> Push the current position and angle onto a stack
-                ] -> Pop the position and angle from the stack
-                & -> Pitch down by a specified angle
-                ^ -> Pitch up by a specified angle
-                > -> Roll right by a specified angle
-                < -> Roll left by a specified angle
-            </p>
+        <h2> The Rules</h2>
+        <p>
+            # RULES
+            For the L-system, the rules are as follows:
+            F, G, H, I, J -> Move forward and draw a line, all go forward same amount
+            X, Y, Z -> A placeholder variable
+            + -> Turn right by a specified angle
+            - -> Turn left by a specified angle
+            [ -> Push the current position and angle onto a stack
+            ] -> Pop the position and angle from the stack
+            & -> Pitch down by a specified angle
+            ^ -> Pitch up by a specified angle
+            > -> Roll right by a specified angle
+            < -> Roll left by a specified angle
+        </p>
     </section>
 
     <section>
@@ -45,7 +45,7 @@
             Fractal Plant: Axiom: `-X` Rules: `X->F+[[X]-X]-F[-FX]+X,F->FF` Angle: `25`
             Wizard Spell A: Axiom: `X` Rules: `X->F[&-FF][^+FF]+>X,F->FF` Angle: `25`
             Wizard Spell B: Axiom: `X` Rules: `F->[F+F^F>F]F-F&F<F,` Angle: `25`
-            Wizard Spell C: Axion: `[+F][-F]` Rules ` F->F>F[^G],G->G<F[^F]` Angle: `40`
+                                                                     Wizard Spell C: Axion: `[+F][-F]` Rules ` F->F>F[^G],G->G<F[^F]` Angle: `40`
         </p>
     </section>
 
@@ -54,14 +54,251 @@
         <img src="(where photo is)" alt="Screeenshot of ..." width="600"
     </section>
 
-    <sectio id="Code">
+    <section id="Harvest Code">
         <h2> Harvest Node Code: Turns the nodes to a 2d array</h2>
         <code>
-            
+            //each new row is a newbranch, prevents ends connecting to begenings
+            // could be a good place to calculate depth....
+            void Node::harvest(vector<pair<vector<Eigen::Vector3f>, int>>& totalBranches, vector<Eigen::Vector3f> currentBranch, int branchDepth) {
+	depth = branchDepth;
+	//adds the verteces to current branch
+	currentBranch.push_back(getPosition());
+
+	//no children means, add the branch to the total branch list and return
+	if (children.size() == 0) {
+
+		totalBranches.push_back(make_pair(currentBranch, branchDepth));
+		return;
+		//this else if ensures only the first child only adds to current bracnh
+	} else if (this->children.size() > 0) {
+		children[0]->harvest(totalBranches, currentBranch, branchDepth );
+	}
+
+	//then it goes to all the oother children to give them their own branch
+	for (int i = 1; i < children.size(); i++) {
+		if (children[i] != nullptr) {
+			vector<Eigen::Vector3f> newBranch = {getPosition()};
+
+			children[i]->harvest(totalBranches, newBranch, branchDepth + 1);
+		}
+	}
+}
         </code>
-        
+
     </section>
 
+    <section id="Spline Code">
+        <h2> Spline Code: Turns the stiff branch into something with more curves</h2>
+        <code>
+            vector<pair<vector<Eigen::Vector3f>, int>> VineGen::splineIt() {
+	/*Spline Options:
+	* Catmull-Rom C1, interpolating, but need tangents, no control at enpoint derive
+	* cubic hermite: C1, interpolating must specify derivatives at each endpoint
+	* Bezier: C1, NOT interpolating, but outliers are problems
+	* Akima: non smoothing
+	* monotone cubic: C1, non smoothing
+	*
+	* WINNER: catmull
+	*
+	*/
+	//variables needes
+	//Pi-1, Pi, Pi+1, Pi+2 anchor, start, end front
+	//t to represent increment, i think .2 or .1 shoudl work, depends of performance
+	//P(s) = T * M * G
+	// T = [t^3, t^2, t, 1] spline coefs
+	// M =  [-s,	2-s,	s-2,	s] CR basis
+	//		[2s,	s-3,	3-2s,	-s]
+	//  	[-s,	0,		s,		0]
+	//		[0,		1,		0,		0]
+	// s is typically 1/2 ig
+	// G = [Pi-1, Pi, Pi+1, Pi+2] control vectors
+
+	vector<pair<vector<Eigen::Vector3f>, int>> points;
+	//
+	vector<Eigen::Vector3f> currentBranch;
+
+	if (verts.size() == 0) {
+		return points;
+	}
+	for (int i = 0; i < (int)verts.size(); i++) {
+		vector<Eigen::Vector3f> branchVerts = verts[i].first;
+		int branchDepth = verts[i].second;
+		if (branchVerts.size() < 2) {
+			continue;
+		}
+		for (int j = 0; j < (int)branchVerts.size() - 1; j++) {
+			if (j == 0) { //need a ghost point if no prev index
+				p0 = branchVerts[j] - (branchVerts[j + 1] - branchVerts[j]);
+			}
+			else {
+				p0 = branchVerts[j - 1];
+			}
+			p1 = branchVerts[j];
+			p2 = branchVerts[j + 1];
+
+			if (j + 2 >= branchVerts.size()) {//need a ghost point if no next index
+				p3 = branchVerts[j + 1] + (branchVerts[j + 1] - branchVerts[j]);
+			}
+			else {
+				p3 = branchVerts[j + 2];
+			}
+
+			if (i == 0 && j == 0) {
+				cout << "p0: " << p0.transpose() << endl;
+				cout << "p1: " << p1.transpose() << endl;
+				cout << "p2: " << p2.transpose() << endl;
+				cout << "p3: " << p3.transpose() << endl;
+			}
+
+			//if chunking, then change k += to .2 or .25, if higher res, then change to .05
+			for (float k = 0; k < 1; k += 0.1f) {
+				currentBranch.push_back(getPoint(k, p0, p1, p2, p3));
+			}
+		}
+		//needs last point
+		currentBranch.push_back(branchVerts.back());
+		points.push_back(make_pair(currentBranch, branchDepth));
+		currentBranch.clear();
+	}
+
+	return points;
+}
+
+Eigen::Vector3f VineGen::getPoint(float t, const Eigen::Vector3f& p0, const Eigen::Vector3f& p1, const Eigen::Vector3f& p2, const Eigen::Vector3f& p3) {
+	//T*M*G
+	s = 0.5f;
+	Eigen::Matrix4f M;
+	M <<
+		-s, 2 - s, s - 2, s,
+		2 * s, s - 3, 3 - 2 * s, -s,
+		-s, 0, s, 0,
+		0, 1, 0, 0;
+
+	Eigen::Vector4f T;
+	T <<  t * t * t, t * t, t, 1.0f;
+	Eigen::Matrix<float, 4, 3> G;
+	G <<p0.x(), p0.y(), p0.z(),
+		p1.x(), p1.y(), p1.z(),
+		p2.x(), p2.y(), p2.z(),
+		p3.x(), p3.y(), p3.z();
+
+	// 1x4* 4x4 is 1x4, 1x4 * 4x3 is 1x3 of verts
+	if ((T.transpose() * M * G).norm() > 1000000.0f) {
+		cout << "Error: NaN value in spline calculation!" << endl;
+	}
+
+	return (T.transpose() * M * G).transpose();
+}
+
+        </code>
+
+    </section>
+
+    <section id="LStringCode" >
+        <h2> LString Generation and Reading Code</h2>
+		<code>
+			string VineGen::getLString(int iterations, string start, unordered_map<string, string>
+	rules) {
+	//Language : F(forward), +(turn right), -(turn left), [ (bracnh/push), ] (return/pop)
+	//Deafult Axiom: F
+	//Default Rule(s) : F -> F[+F]F[-F]F
+
+	//NEEDS SINGLE CHAR RULE -> ANY # OF CHARS REPLACEMENT
+
+	//replaces all instances of a rule to replace with what its supposed to
+	string LString = start;
+	for (int i = 0; i < iterations; i++) {
+	string nextString = "";
+
+	for (char c : LString) {
+	auto it = rules.find(string(1, c));
+	if (it != rules.end()) {
+	nextString += it->second;
+	}
+	else {
+	nextString += c;
+	}
+	}
+	LString = nextString;
+	}
+	return LString;
+	}
+
+	void Turt::processString(const string& commands) {
+	Eigen::Matrix3f twisty;
+	Flower flower;
+	Leaf leaf;
+	for (char command : commands) {
+	switch (command) {
+	case 'F':
+	//default step size of 1.0
+	stepForward(1.0f);
+	break;
+	case 'G':
+	stepForward(1.0f);
+	break;
+	case 'H':
+	stepForward(1.0f);
+	break;
+	case 'I':
+	stepForward(1.0f);
+	break;
+	case 'J':
+	stepForward(1.0f);
+	break;
+	case '[':
+	push();
+	break;
+	case ']':
+	pop();
+	break;
+	case '+':
+	//rotate right by certain degrees
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitZ());
+	heading = twisty * heading;
+	break;
+	case '-':
+	//rotate left by certain degrees
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitZ());
+	heading = twisty.transpose() * heading;
+	break;
+	case '^':
+	//rotate up by certain degrees
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitX());
+	heading = twisty * heading;
+	break;
+	case '&':
+	//rotate down by certain degrees
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitX());
+	heading = twisty.transpose() * heading;
+	break;
+	case '<':
+	//roll left by 45 degrees
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitY());
+	heading = twisty * heading;
+	break;
+	case '>':
+	twisty = Eigen::AngleAxisf(rads, Eigen::Vector3f::UnitY());
+	heading = twisty.transpose() * heading; //roll right by 45 degrees
+	break;
+	case 'X':
+	//ignored like other things, but I still want it there
+	break;
+	case 'Y':
+	//ignored like other things, but I still want it there
+	break;
+	case 'Z':
+	//ignored like other things, but I still want it there
+	break;
+	default:
+	//ignore unrecognized commands
+	break;
+	}
+	}
+	}
+
+</code>
+    </section>
 
 
 </body>
