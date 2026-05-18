@@ -57,10 +57,18 @@ You must understand how to add smaller branches reasonably, as they grow exponen
 
 
 # WORKS CITED 
-"Bark Willow." Poly Haven, polyhaven.com/a/bark_willow. Accessed 20 Mar. 2026.
-Blender Foundation. Blender. Version 5.0.1, Blender Foundation, www.blender.org. Accessed 10 Mar. 2026.
-Twigg, Christopher. "catmullRom.pdf." Carnegie Mellon University, www.cs.cmu.edu/~fp/courses/graphics/asst5/catmullRom.pdf. Accessed 13 Mar. 2026.
-"Detailed Closeup Single Grape Leaf." Freepik, www.freepik.com/free-psd/detailed-closeup-single-grape-leaf_409868960.htm. Accessed 20 Mar. 2026.
-"Curves and Splines" Computer Graphics (15-462), Spring 2010, Carnegie Mellon University, www.cs.cmu.edu/afs/cs/academic/class/15462-s10/www/lec-slides/lec06.pdf. Accessed 13 Mar. 2026.
-"Pink Flower Petal Illustration Vector Set." Freepik, www.freepik.com/free-vector/pink-flower-petal-illustration-vector-set_16359014.htm. Accessed 20 Mar. 2026.
-Futrick, S. Robert, and Jason Stowe. "LSystems Generator." Cornell University, people.ece.cornell.edu/land/OldStudentProjects/cs490-96to97/STOWE/P3D.html. Accessed 14 Mar. 2026.
+
+This document contains the formatted bibliographic references for the project assets, software, and academic literature, organized according to standard MLA (9th edition) guidelines.
+
+## Textures & Assets
+* **Bark Willow.** *Poly Haven*, [polyhaven.com/a/bark_willow](https://polyhaven.com/a/bark_willow). Accessed 20 Mar. 2026.
+* **"Detailed Closeup Single Grape Leaf."** *Freepik*, [www.freepik.com/free-psd/detailed-closeup-single-grape-leaf_409868960.htm](https://www.freepik.com/free-psd/detailed-closeup-single-grape-leaf_409868960.htm). Accessed 20 Mar. 2026.
+* **"Pink Flower Petal Illustration Vector Set."** *Freepik*, [www.freepik.com/free-vector/pink-flower-petal-illustration-vector-set_16359014.htm](https://www.freepik.com/free-vector/pink-flower-petal-illustration-vector-set_16359014.htm). Accessed 20 Mar. 2026.
+
+## Software & Tools
+* **Blender Foundation.** *Blender*, Version 5.0.1, Blender Foundation, [www.blender.org](https://www.blender.org). Accessed 10 Mar. 2026.
+
+## Academic & Technical Literature
+* **"Curves and Splines."** *Computer Graphics (15-462)*, Spring 2010, Carnegie Mellon University, [www.cs.cmu.edu/afs/cs/academic/class/15462-s10/www/lec-slides/lec06.pdf](https://www.cs.cmu.edu/afs/cs/academic/class/15462-s10/www/lec-slides/lec06.pdf). Accessed 13 Mar. 2026.
+* **Futrick, S. Robert, and Jason Stowe.** "LSystems Generator." *Cornell University*, [people.ece.cornell.edu/land/OldStudentProjects/cs490-96to97/STOWE/P3D.html](http://people.ece.cornell.edu/land/OldStudentProjects/cs490-96to97/STOWE/P3D.html). Accessed 14 Mar. 2026.
+* **Twigg, Christopher.** "catmullRom.pdf." *Carnegie Mellon University*, [www.cs.cmu.edu/~fp/courses/graphics/asst5/catmullRom.pdf](https://www.cs.cmu.edu/~fp/courses/graphics/asst5/catmullRom.pdf). Accessed 13 Mar. 2026.
